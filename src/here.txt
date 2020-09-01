@@ -1,0 +1,248 @@
+<script src="https://unpkg.com/vue@2.6.12/dist/vue.js"></script>
+
+<div id="app">
+  <div class="header">
+    <div>
+      <h3>
+        You
+      </h3>
+      <div class="progress-track">
+        <div class="progress" :style="{width: playerLife}"></div>
+      </div>{{playerHealth}}%
+    </div>
+    <div>
+      <h3>
+        Monster
+      </h3>
+      <div class="progress-track">
+        <div class="progress" :style="{width: monsterLife}"></div>
+      </div>{{monsterHealth}}%
+    </div>
+  </div>
+  <div class="buttons-container">
+    <button v-if="!gameStarted" :class="['start']"
+      @click="gameStarted = true">
+      Start New Game
+    </button>
+    <template v-else>
+      <button class="attack" @click="attack">
+        Attack
+      </button>
+      <button class="special-attack" @click="specialAttack">
+        Special Attack
+      </button>
+      <button class="heal" @click="heal">
+        Heal
+      </button>
+      <button class="give-up"
+        @click="gameStarted = restartGame()">
+        Give Up
+      </button>
+    </template>
+  </div>
+  <div class="results-container">
+    <tempelate v-for="(attack, index) in attackHistory">
+      <div class="result" :class="[attack.class]">
+        {{ attack.text }}
+      </div>
+    </tempelate>
+  </div>
+</div>
+
+
+---------------------------
+
+
+
+
+new Vue({
+	el: "#app",
+  data: {
+  	playerHealth: 100,
+    monsterHealth: 100,
+    gameStarted: false,
+    attackHistory: []
+  },
+  methods: {
+  	attack: function(){
+    	console.log(this.attackHistory);
+    	let playerHit = Math.round(Math.random() * 10);
+      let monsterHit = Math.round(Math.random() * 15);
+      if(this.monsterHealth < playerHit){
+      	this.monstererHealth = 0;
+        this.attackHistory = [...this.attackHistory, 
+        {text: `Player hits monster for ${this.monsterHealth}`, class: 'blue'},
+        {text: `Monster hits player for ${monsterHit}`, class: 'red'},
+        ]
+      }
+      if(this.playerHealth < monsterHit){
+        this.playerHealth = 0;
+        this.attackHistory = [...this.attackHistory, 
+        {text: `Player hits monster for ${playerHit}`, class: 'blue'},
+        {text: `Monster hits player for ${this.playerHealth}`, class: 'red'},
+        ]
+      }
+      else {
+      	this.playerHealth -= monsterHit;
+        this.monsterHealth -= playerHit;
+        this.attackHistory = [...this.attackHistory, 
+        	{text: `Player hits monster for ${playerHit}`, class: 'blue'},
+        	{text: `Monster hits player for ${monsterHit}`, class: 'red'},
+        ]
+      }
+      /* return this.checkGameOver() ? alert("Game over") : null; */
+    },
+    specialAttack: function() {
+	    console.log(this.attackHistory);
+      let playerHit = Math.round(Math.random() * 20) + 10;
+      let monsterHit = Math.round(Math.random() * 15);
+      
+      if(this.monsterHealth < playerHit){
+      	this.monstererHealth = 0;
+        this.attackHistory = [...this.attackHistory, 
+        {text: `Player hits monster for ${this.monsterHealth}`, class: 'blue'},
+        {text: `Monster hits player for ${monsterHit}`, class: 'red'},
+        ]
+      }
+      if(this.playerHealth < monsterHit){
+        this.playerHealth = 0;
+        this.attackHistory = [...this.attackHistory, 
+        {text: `Player hits monster for ${playerHit}`, class: 'blue'},
+        {text: `Monster hits player for ${this.playerHealth}`, class: 'red'},
+        ]
+      }
+      else {
+      	this.playerHealth -= monsterHit;
+        this.monsterHealth -= playerHit;
+        this.attackHistory = [...this.attackHistory, 
+        	{text: `Player hits monster for ${playerHit}`, class: 'blue'},
+        	{text: `Monster hits player for ${monsterHit}`, class: 'red'},
+        ]
+      }
+      // return this.checkGameOver() ? alert("Game over") : null;
+    },
+    heal: function() {
+    	let healingAmount = Math.round(Math.random() * 7);
+      this.playerHealth += healingAmount;
+      /* return this.checkGameOver() ? alert("Game over") : null; */
+    },
+    checkGameOver: function() {
+    	if(this.monsterHealth <= 0)
+      	return true;
+      return false;
+    },
+  	restartGame: function() {
+    	let restrat = confirm('You lost! Do you want to restart?');
+      if(restart) {
+      	this.playerHealth = 100;
+        this.monsterHealth = 100;
+      }
+    	return restart;
+    }
+  },
+  computed: {
+  	playerLife: function() {
+    	return this.playerHealth + "%"
+    },
+    monsterLife: function() {
+    	return this.monsterHealth + "%"
+    }
+  }
+})
+
+
+********************************************
+
+
+.header {
+  display: flex;
+  justify-content: space-around;
+}
+
+.progress-track {
+  height: 20px;
+  width: 200px;
+  background: #e7e7e7;
+}
+
+.progress {
+   background: green;
+   width: 0%;
+   text-align: center;
+   height: 100%;
+   font-size: 12px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   color: #ffffff;
+   font-weight: 700;
+}
+
+.buttons-container {
+    display: flex;
+    padding: 20px;
+    background: #f1f1f1;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 10px;
+}
+
+.result {
+  padding: 2px;
+  text-align: center;
+  font-weight: 700;
+  margin: 2px;
+  width: 92%
+}
+
+.red {
+  background: rgba(255, 0, 0, 0.4);
+  color: rgba(255, 0, 0, 0.9);;
+}
+
+.blue {
+  background: rgba(0, 0, 255, 0.4);
+  color: rgba(0, 0, 255, 0.9);
+}
+
+button {
+  border: none;
+  margin: 4px;
+  padding: 4px 10px;
+  background: grey;
+  border-radius: 4px;
+  width: 250px;
+  min-height: 40px;
+  outline: none;
+  font-weight: 700;
+  box-shadow: 0 3px 1rem -0.4rem black;
+  /* transition: transform 0.1s; */
+}
+
+button:active {
+  transform: translateY(3px);
+}
+
+.start {
+   background: springgreen;
+}
+
+.attack {
+  background: tomato;
+}
+.special-attack {
+  background: orange;
+}
+.heal {
+  background: violet;
+}
+.give-up {
+  background: red;
+}
+
+.results-container {
+  width: 92%;
+  padding: 10px;
+  background: #f1f1f1;
+  margin: 0 auto;
+}
